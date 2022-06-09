@@ -1462,11 +1462,56 @@ make_cluster = function(object, which = c("row", "column")) {
 
     slice_od = seq_along(order_list)
     # make dend in each slice
-    if(cluster) {
-         dend_list = list(dend_param$obj)
-               order_list = list(get_dend_order(dend_param$obj))
-            
+     if(cluster) {
+        if(verbose) qqcat("apply clustering on each slice (@{length(order_list)} slices)\n")
+        dend_list = rep(list(NULL), length(order_list))
+        for(i in seq_along(order_list)) {
+            if(which == "row") {
+                submat = mat[ order_list[[i]], , drop = FALSE]
+            } else {
+                submat = mat[, order_list[[i]], drop = FALSE]
+            }
+            nd = 0
+            if(which == "row") nd = nrow(submat) else nd = ncol(submat)
+            if(nd > 1) {
+                if(!is.null(dend_param$fun)) {
+                    if(which == "row") {
+                        obj = dend_param$fun(submat)
+                    } else {
+                        obj = dend_param$fun(t(submat))
+                    }
+                    if(inherits(obj, "dendrogram") || inherits(obj, "hclust")) {
+                        dend_list[[i]] = obj
+                    } else {
+                        oe = try(obj <- as.dendrogram(obj), silent = TRUE)
+                        if(inherits(oe, "try-error")) {
+                            stop_wrap("the clustering function must return a `dendrogram` object or a object that can be coerced to `dendrogram` class.")
+                        }
+                        dend_list[[i]] = obj
+                    }
+                    order_list[[i]] = order_list[[i]][ get_dend_order(dend_list[[i]]) ]
+                } else {
+
+                        if(which == "row") {
+                            dend_list[[i]] = hclust(get_dist(submat, distance), method = method)
+                        } else {
+                            dend_list[[i]] = hclust(get_dist(t(submat), distance), method = method)
+                        }
+                        order_list[[i]] = order_list[[i]][ get_dend_order(dend_list[[i]]) ]
+                    #}
+                }
+            } else {
+                # a dendrogram with one leaf
+                dend_list[[i]] = structure(1, members = 1, height = 0, leaf = TRUE, class = "dendrogram")
+                order_list[[i]] = order_list[[i]][1]
+            }
         }
+         
+         dend_param$obj = hclust(get_dist(mat, distance), method = method)
+           
+                dend_list = list(dend_param$obj)
+                order_list = list(get_dend_order(dend_param$obj))
+                
         names(dend_list) = names(order_list)
 
         for(i in seq_along(dend_list)) {
