@@ -1465,13 +1465,7 @@ make_cluster = function(object, which = c("row", "column")) {
     if(cluster) {
          dend_list = list(dend_param$obj)
                order_list = list(get_dend_order(dend_param$obj))
-            } else {
-                # a dendrogram with one leaf
-                 dend_param$obj = hclust(get_dist(mat, distance), method = method)
-                #dend_list[[i]] = structure(1, members = 1, height = 0, leaf = TRUE, class = "dendrogram")
-                dend_list = list(dend_param$obj)
-               order_list = list(get_dend_order(dend_param$obj))
-            }
+            
         }
         names(dend_list) = names(order_list)
 
