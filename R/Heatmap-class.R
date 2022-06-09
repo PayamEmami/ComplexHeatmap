@@ -1266,7 +1266,7 @@ make_cluster = function(object, which = c("row", "column")) {
                 for(i in seq_along(dend_list)) {
                     if(length(order_list[[i]]) > 1) {
                         sub_ind = sort(order_list[[i]])
-                        dend_list[[i]] = reorder(dend_list[[i]], reorder[sub_ind], mean)
+                        dend_list[[i]] = reorder(dend_list[[i]], reorder[sub_ind], sum)
                         # the order of object@row_dend_list[[i]] is the order corresponding to the big dendrogram
                         order_list[[i]] = order.dendrogram(dend_list[[i]])
                     }
@@ -1401,7 +1401,7 @@ make_cluster = function(object, which = c("row", "column")) {
         }
         if(cluster_slices) {
             hc = hclust(dist(t(meanmat)))
-            hc = as.hclust(reorder(as.dendrogram(hc), weight, mean))
+            hc = as.hclust(reorder(as.dendrogram(hc), weight, sum))
         } else {
             hc = list(order = order(weight))
         }
@@ -1547,7 +1547,7 @@ make_cluster = function(object, which = c("row", "column")) {
             for(i in seq_along(dend_list)) {
                 if(length(order_list[[i]]) > 1) {
                     sub_ind = sort(order_list[[i]])
-                    dend_list[[i]] = reorder(dend_list[[i]], reorder[sub_ind], mean)
+                    dend_list[[i]] = reorder(dend_list[[i]], reorder[sub_ind], sum)
                     order_list[[i]] = sub_ind[ order.dendrogram(dend_list[[i]]) ]
                 }
             }
@@ -1564,7 +1564,7 @@ make_cluster = function(object, which = c("row", "column")) {
                 slice_mean = matrix(slice_mean, nrow = 1)
             }
             dend_slice = as.dendrogram(hclust(dist(t(slice_mean))))
-            dend_slice = reorder(dend_slice, slice_mean, mean)
+            dend_slice = reorder(dend_slice, slice_mean, sum)
             if(verbose) qqcat("perform clustering on mean of @{which} slices\n")
 
             slice_od = order.dendrogram(dend_slice)
