@@ -1216,16 +1216,18 @@ make_cluster = function(object, which = c("row", "column")) {
                 if(split < 2) {
                     stop_wrap(qq("`@{which}_split` should be >= 2."))
                 }
-                dend_param$split_by_cutree = TRUE
+               # dend_param$split_by_cutree = TRUE
                 
-                ct = cut_dendrogram(dend_param$obj, split)
-                dend_list = ct$lower
-                dend_slice = ct$upper
-                sth = tapply(order.dendrogram(dend_param$obj), 
-                    rep(seq_along(dend_list), times = sapply(dend_list, nobs)), 
-                    function(x) x, simplify = FALSE)
-                attributes(sth) = NULL
-                order_list = sth
+                #ct = cut_dendrogram(dend_param$obj, split)
+                #dend_list = ct$lower
+                #dend_slice = ct$upper
+                #sth = tapply(order.dendrogram(dend_param$obj), 
+                 #   rep(seq_along(dend_list), times = sapply(dend_list, nobs)), 
+                  #  function(x) x, simplify = FALSE)
+                #attributes(sth) = NULL
+                #order_list = sth
+                dend_list = list(dend_param$obj)
+                order_list = list(get_dend_order(dend_param$obj))
                 if(verbose) qqcat("cut @{which} dendrogram into @{split} slices.\n")
             }
 
