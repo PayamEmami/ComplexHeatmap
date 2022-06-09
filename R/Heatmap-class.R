@@ -1462,8 +1462,9 @@ make_cluster = function(object, which = c("row", "column")) {
 
     slice_od = seq_along(order_list)
     # make dend in each slice
-    if(F) {
+    if(cluster) {
         if(verbose) qqcat("apply clustering on each slice (@{length(order_list)} slices)\n")
+        print(order_list)
         dend_list = rep(list(NULL), length(order_list))
         for(i in seq_along(order_list)) {
             if(which == "row") {
